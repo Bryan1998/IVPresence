@@ -34,10 +34,6 @@ namespace IVPresence {
 				CurVehicle = "On Foot";
 			}
 
-			dynamic CurPos = Player.Character.Position;
-			string CurZone = Function.Call("GET_MAP_AREA_FROM_COORDS", CurPos.X, CurPos.Y, CurPos.Z).ToString(); // How the fuck do I assign this to a variable??
-
-			// I wish there was a better way...
 			string CurWeapon = Player.Character.Weapons.Current.Type.ToString();
 			string CurWeaponIcon = Player.Character.Weapons.Current.Type.ToString().ToLower();
 			if (CurWeapon == "AssaultRifle_AK47") {
@@ -88,9 +84,13 @@ namespace IVPresence {
 			else {
 				CurWeapon = "Unarmed";
 			}
-			// As I said, I wish there was a better way...
-			//CurWeapon = Player.Character.Weapons.Current.Type.ToString();
-			//CurWeaponIcon = Player.Character.Weapons.Current.Type.ToString().ToLower();
+
+			uint Hash1 = 0;
+			uint Hash2 = 0;
+			dynamic CurPos = Player.Character.Position;
+			Function.Call("FIND_STREET_NAME_AT_POSITION", CurPos.X, CurPos.Y, CurPos.Z, Hash1, Hash2);																													 //Game.Console.Print()
+			string CurStreet = Function.Call<string>("GET_STRING_FROM_HASH_KEY", Hash1) + " | " + Function.Call<string>("GET_STRING_FROM_HASH_KEY", Hash2);
+			Game.Console.Print(CurStreet);
 
 			client.SetPresence(new RichPresence() {
 				Details = "Money: $" + Player.Money.ToString() + " | " + CurVehicle,
@@ -98,7 +98,7 @@ namespace IVPresence {
 				//Timestamps = Timestamps.FromTimeSpan(StartTime.Second),
 				Assets = new Assets() {
 					LargeImageKey = "game_icon",
-					LargeImageText = "Location: " + CurZone,
+					LargeImageText = "Location: " + CurStreet,
 					SmallImageKey = CurWeaponIcon,
 					SmallImageText = CurWeapon
 				}
