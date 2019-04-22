@@ -28,7 +28,7 @@ namespace IVPresence {
 		public void Main(object sender, EventArgs e) {
 			dynamic CurVehicle;
 			if (Exists(Player.Character.CurrentVehicle)) {
-				CurVehicle = "In Vehicle";
+				CurVehicle = "In Vehicle: " + Player.Character.CurrentVehicle.Name;
 			}
 			else {
 				CurVehicle = "On Foot";
@@ -36,69 +36,61 @@ namespace IVPresence {
 
 			string CurWeapon = Player.Character.Weapons.Current.Type.ToString();
 			string CurWeaponIcon = Player.Character.Weapons.Current.Type.ToString().ToLower();
-			if (CurWeapon == "AssaultRifle_AK47") {
+			if (CurWeapon == "Rifle_AK47") {
 				CurWeapon = "AK-47";
 			}
-			else if (CurWeapon == "AssaultRifle_M4") {
+			else if (CurWeapon == "Rifle_M4") {
 				CurWeapon = "M4";
 			}
-			else if (CurWeapon == "BarettaShotgun") {
+			else if (CurWeapon == "Shotgun_Baretta") {
 				CurWeapon = "Beretta 1201";
 			}
-			else if (CurWeapon == "BaseballBat") {
+			else if (CurWeapon == "Melee_BaseballBat") {
 				CurWeapon = "Baseball Bat";
 			}
-			else if (CurWeapon == "BasicShotgun") {
+			else if (CurWeapon == "Shotgun_Basic") {
 				CurWeapon = "Shotgun";
 			}
-			else if (CurWeapon == "BasicSniperRifle") {
+			else if (CurWeapon == "SniperRifle_Basic") {
 				CurWeapon = "Sniper Rifle";
 			}
-			else if (CurWeapon == "DesertEagle") {
+			else if (CurWeapon == "Handgun_DesertEagle") {
 				CurWeapon = "Desert Eagle";
 			}
-			else if (CurWeapon == "Glock") {
+			else if (CurWeapon == "Handgun_Glock") {
 				CurWeapon = "Glock 17";
 			}
-			else if (CurWeapon == "Grenades") {
+			else if (CurWeapon == "Thrown_Grenade") {
 				CurWeapon = "Grenade";
 			}
-			else if (CurWeapon == "Knife") {
+			else if (CurWeapon == "Melee_Knife") {
 				CurWeapon = "Knife";
 			}
-			else if (CurWeapon == "MolotovCocktails") {
+			else if (CurWeapon == "Thrown_Molotov") {
 				CurWeapon = "Molotov Cocktail";
 			}
-			else if (CurWeapon == "MP5") {
+			else if (CurWeapon == "SMG_MP5") {
 				CurWeapon = "MP5";
 			}
-			else if (CurWeapon == "RocketLauncher") {
+			else if (CurWeapon == "Heavy_RocketLauncher") {
 				CurWeapon = "Rocket Launcher";
 			}
 			else if (CurWeapon == "SniperRifle_M40A1") {
 				CurWeapon = "M40A1";
 			}
-			else if (CurWeapon == "Uzi") {
+			else if (CurWeapon == "SMG_Uzi") {
 				CurWeapon = "Uzi";
 			}
 			else {
 				CurWeapon = "Unarmed";
 			}
-
-			uint Hash1 = 0;
-			uint Hash2 = 0;
-			dynamic CurPos = Player.Character.Position;
-			Function.Call("FIND_STREET_NAME_AT_POSITION", CurPos.X, CurPos.Y, CurPos.Z, Hash1, Hash2);																													 //Game.Console.Print()
-			string CurStreet = Function.Call<string>("GET_STRING_FROM_HASH_KEY", Hash1) + " | " + Function.Call<string>("GET_STRING_FROM_HASH_KEY", Hash2);
-			Game.Console.Print(CurStreet);
-
+			
 			client.SetPresence(new RichPresence() {
 				Details = "Money: $" + Player.Money.ToString() + " | " + CurVehicle,
 				State = "Wanted Level: " + Player.WantedLevel.ToString() + " Stars | " + CurWeapon,
-				//Timestamps = Timestamps.FromTimeSpan(StartTime.Second),
 				Assets = new Assets() {
 					LargeImageKey = "game_icon",
-					LargeImageText = "Location: " + CurStreet,
+					LargeImageText = "On Street: " + World.GetStreetName(Player.Character.Position).ToString(),
 					SmallImageKey = CurWeaponIcon,
 					SmallImageText = CurWeapon
 				}
