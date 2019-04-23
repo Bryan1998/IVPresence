@@ -1,15 +1,13 @@
 ﻿using DiscordRPC;
 using GTA;
-using GTA.Native;
 using System;
-using System.Diagnostics;
-using System.Windows.Forms;
+using System.Globalization;
 
 namespace IVPresence {
 	public class IVPresence : Script {
 
 		public DiscordRpcClient client = new DiscordRpcClient("568611046995263508");
-
+		public TextInfo TextInfo = new CultureInfo("en-US", false).TextInfo;
 		public IVPresence() {
 			client.Initialize();
 
@@ -26,9 +24,9 @@ namespace IVPresence {
 		}
 
 		public void Main(object sender, EventArgs e) {
-			dynamic CurVehicle;
+			string CurVehicle;
 			if (Exists(Player.Character.CurrentVehicle)) {
-				CurVehicle = "In Vehicle: " + Player.Character.CurrentVehicle.Name;
+				CurVehicle = "In Vehicle: " + TextInfo.ToTitleCase(Player.Character.CurrentVehicle.Name.ToLower());
 			}
 			else {
 				CurVehicle = "On Foot";
@@ -84,10 +82,21 @@ namespace IVPresence {
 			else {
 				CurWeapon = "Unarmed";
 			}
-			
+
+			string CurWantedLevel;
+			if (Player.WantedLevel == 1) {
+				CurWantedLevel = "Wanted Level: 1 Star";
+			}
+			else if (Player.WantedLevel == 0){
+				CurWantedLevel = "Not Wanted";
+			}
+			else {
+				CurWantedLevel = "Wanted Level: " + Player.WantedLevel.ToString() + " Stars";
+			}
+
 			client.SetPresence(new RichPresence() {
 				Details = "Money: $" + Player.Money.ToString() + " | " + CurVehicle,
-				State = "Wanted Level: " + Player.WantedLevel.ToString() + " Stars | " + CurWeapon,
+				State = CurWantedLevel + " | " + CurWeapon,
 				Assets = new Assets() {
 					LargeImageKey = "game_icon",
 					LargeImageText = "On Street: " + World.GetStreetName(Player.Character.Position).ToString(),
